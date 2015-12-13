@@ -21,9 +21,11 @@
 </head>
 <body>
 	<?php 
+		
 		/*  cache client 引入及設定  */
 		// Using MemcacheSASL client
-		include('MemcacheSASL.php');
+		
+/* 		include('MemcacheSASL.php');
 		$m = new MemcacheSASL;
 		$servers = explode(",", getenv("MEMCACHIER_SERVERS"));
 		foreach ($servers as $s) {
@@ -31,8 +33,12 @@
 		  $m->addServer($parts[0], $parts[1]);
 		}
 		$m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
+ */		
+ 
 		/*  cache client 引入及設定  */
 
+		
+		
 		/*  外部 S3 class 設定 */
 		//include the S3 class				
 		if (!class_exists('S3')) require_once('S3.php');
@@ -64,7 +70,7 @@
 					// caching using local file name as key 
 		    		$m->set($fileName,$data,0);
 		    		// saving file on S3
-					if ($s3->putObjectFile($fileTempName, "pixupload", $fileName, S3::ACL_PUBLIC_READ)) {  
+					if ($s3->putObjectFile($fileTempName, "nccus3", $fileName, S3::ACL_PUBLIC_READ)) {  
 					    echo "We successfully uploaded your file.";  
 					} else {  
 					    echo "Something went wrong while uploading your file... sorry.";  
@@ -92,12 +98,12 @@
     <?php
 		/* 用 foreach 把 S3 所有的圖讀出來顯示，若為資料夾就掉過 */    
 		// Get the contents of our bucket
-		$contents = $s3->getBucket("pixupload");
+		$contents = $s3->getBucket("nccus3");
 		foreach ($contents as $file){
 			$fname = $file['name'];
 			$num=strrpos($fname,"/"); // if $file is a directory path
 			if ($num === false) {
-				$furl = "http://pixupload.s3.amazonaws.com/".$fname;
+				$furl = "http://nccus3.s3.amazonaws.com/".$fname;
 				echo "<a href=\"image_cache.php?fn=$fname\" alt=\"$fname\"><img id=\"thumb\" src=\"$furl\" /></a>";
 			}
 		}
