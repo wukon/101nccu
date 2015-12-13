@@ -102,7 +102,7 @@
 		foreach ($contents as $file){
 			$fname = $file['name'];
 			$num=strrpos($fname,"/"); // if $file is a directory path
-			if ($num === false) {
+			if ($num == false) {
 				$furl = "http://nccus3.s3.amazonaws.com/".$fname;
 				echo "<a href=\"image_cache.php?fn=$fname\" alt=\"$fname\"><img id=\"thumb\" src=\"$furl\" /></a>";
 			}
