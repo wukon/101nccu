@@ -37,8 +37,8 @@
 		//include the S3 class				
 		if (!class_exists('S3')) require_once('S3.php');
 		//AWS access info
-		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAI7CTBEUGMRXEP6TA');
-		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
+		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAIFKYPCAGI5AJIQQQ');
+		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
 		//instantiate the class
 		$s3 = new S3(awsAccessKey, awsSecretKey);
 		/* 外部 S3 class 設定 */
@@ -64,7 +64,7 @@
 					// caching using local file name as key 
 		    		$m->set($fileName,$data,0);
 		    		// saving file on S3
-					if ($s3->putObjectFile($fileTempName, "yugawa33upload", $fileName, S3::ACL_PUBLIC_READ)) {  
+					if ($s3->putObjectFile($fileTempName, "nccus3", $fileName, S3::ACL_PUBLIC_READ)) {  
 					    echo "We successfully uploaded your file.";  
 					} else {  
 					    echo "Something went wrong while uploading your file... sorry.";  
@@ -93,12 +93,12 @@
     <?php
 		/* 用 foreach 把 S3 所有的圖讀出來顯示，若為資料夾就掉過 */    
 		// Get the contents of our bucket
-		$contents = $s3->getBucket("yugawa33upload");
+		$contents = $s3->getBucket("nccus3");
 		foreach ($contents as $file){
 			$fname = $file['name'];
 			$num=strrpos($fname,"/"); // if $file is a directory path
 			if ($num === false) {
-				$furl = "http://yugawa33upload.s3.amazonaws.com/".$fname;
+				$furl = "http://nccus3.s3.amazonaws.com/".$fname;
 				echo "<a href=\"image_cache.php?fn=$fname\" alt=\"$fname\"><img id=\"thumb\" src=\"$furl\" /></a>";
 			}
 		}
