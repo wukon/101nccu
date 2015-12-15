@@ -21,11 +21,9 @@
 </head>
 <body>
 	<?php 
-		
 		/*  cache client 引入及設定  */
 		// Using MemcacheSASL client
-		
-/* 		include('MemcacheSASL.php');
+		include('MemcacheSASL.php');
 		$m = new MemcacheSASL;
 		$servers = explode(",", getenv("MEMCACHIER_SERVERS"));
 		foreach ($servers as $s) {
@@ -33,18 +31,14 @@
 		  $m->addServer($parts[0], $parts[1]);
 		}
 		$m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
- */		
- 
 		/*  cache client 引入及設定  */
 
-		
-		
 		/*  外部 S3 class 設定 */
 		//include the S3 class				
 		if (!class_exists('S3')) require_once('S3.php');
 		//AWS access info
-		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAIFKYPCAGI5AJIQQQ');
-		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
+		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAI7CTBEUGMRXEP6TA');
+		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
 		//instantiate the class
 		$s3 = new S3(awsAccessKey, awsSecretKey);
 		/* 外部 S3 class 設定 */
@@ -70,7 +64,7 @@
 					// caching using local file name as key 
 		    		$m->set($fileName,$data,0);
 		    		// saving file on S3
-					if ($s3->putObjectFile($fileTempName, "nccus3", $fileName, S3::ACL_PUBLIC_READ)) {  
+					if ($s3->putObjectFile($fileTempName, "yugawa33upload", $fileName, S3::ACL_PUBLIC_READ)) {  
 					    echo "We successfully uploaded your file.";  
 					} else {  
 					    echo "Something went wrong while uploading your file... sorry.";  
@@ -85,7 +79,8 @@
 
 	<!-- 預覽縮圖 div -->
     <div class="image-proview" id="image-proview-layer">
-    	<img id="reg_pic" src="upload_photo.PNG"/>
+    	<!--img id="reg_pic" src="upload_photo.PNG"/-->
+    	<img id="reg_pic" src="PleaseUploadPics.jpg"/>
     </div>
 	<!-- end 預覽縮圖 div -->
 	<!-- 上傳表單，選擇檔案後 onchange 會改變預覽圖案 -->
@@ -98,12 +93,12 @@
     <?php
 		/* 用 foreach 把 S3 所有的圖讀出來顯示，若為資料夾就掉過 */    
 		// Get the contents of our bucket
-		$contents = $s3->getBucket("nccus3");
+		$contents = $s3->getBucket("yugawa33upload");
 		foreach ($contents as $file){
 			$fname = $file['name'];
 			$num=strrpos($fname,"/"); // if $file is a directory path
-			if ($num == false) {
-				$furl = "http://nccus3.s3.amazonaws.com/".$fname;
+			if ($num === false) {
+				$furl = "http://yugawa33upload.s3.amazonaws.com/".$fname;
 				echo "<a href=\"image_cache.php?fn=$fname\" alt=\"$fname\"><img id=\"thumb\" src=\"$furl\" /></a>";
 			}
 		}
