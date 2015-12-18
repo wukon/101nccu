@@ -36,8 +36,8 @@
   //include the S3 class
   if (!class_exists('S3'))require_once('S3.php');
   //AWS access info
-  if (!defined('awsAccessKey')) define('awsAccessKey', '');
-  if (!defined('awsSecretKey')) define('awsSecretKey', '');
+  if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAISH4GC5XNVHKS6IQ');
+  if (!defined('awsSecretKey')) define('awsSecretKey', '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');
 
   //$in_cache = $m->get("$filename");
   $in_cache = $redis->get("$filename");
