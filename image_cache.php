@@ -11,18 +11,20 @@
 <h1>Pic in Cache</h1>
 <a href="index.php">回上一頁</a></body><br /><br />
 <?php
-   require __DIR__.'/vendor/autoload.php';
+
+  require __DIR__.'/vendor/autoload.php';
   Predis\Autoloader::register();
   $redis = new Predis\Client(getenv('REDIS_URL'));
-  
+
   if (isset($_GET["fn"])) {
     $filename = $_GET["fn"];
     $path_ext = pathinfo($filename, PATHINFO_EXTENSION); // get filename extension
     $ext = strtolower($path_ext);
   }
 
+  /*
   // Using MemcacheSASL client
-  /*include('MemcacheSASL.php');
+  include('MemcacheSASL.php');
   $m = new MemcacheSASL;
   $servers = explode(",", getenv("MEMCACHIER_SERVERS"));
   foreach ($servers as $s) {
@@ -31,15 +33,14 @@
   }
   $m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
   */
-
   //include the S3 class
   if (!class_exists('S3'))require_once('S3.php');
   //AWS access info
-  if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAISH4GC5XNVHKS6IQ	');
-  if (!defined('awsSecretKey')) define('awsSecretKey', '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');
- 
+  if (!defined('awsAccessKey')) define('awsAccessKey', '');
+  if (!defined('awsSecretKey')) define('awsSecretKey', '');
 
-  $in_cache = $m->get("$filename");
+  //$in_cache = $m->get("$filename");
+  $in_cache = $redis->get("$filename");
   if ($in_cache) {
     echo "<img src=\"data:image/$ext;base64,".base64_encode($in_cache)."\" id=\"thumb\" alt=\"image 1\"/>";
   } else {

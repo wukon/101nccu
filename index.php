@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
- <title>PIC UPLOAD EXAMPLE</title>
+<title>PIC UPLOAD EXAMPLE</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 	body {
@@ -20,22 +20,9 @@
 </style>
 </head>
 <body>
-	<?php 
-		/*  cache client 引入及設定  */
-		// Using MemcacheSASL client
-		/*include('MemcacheSASL.php');
-		$m = new MemcacheSASL;
-		$servers = explode(",", getenv("MEMCACHIER_SERVERS"));
-		foreach ($servers as $s) {
-		  $parts = explode(":", $s);
-		  $m->addServer($parts[0], $parts[1]);
-		}
-		$m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
-		*/
-		/*  cache client 引入及設定  */
-		
+	<?php
+		// prepend a base path if Predis is not present in your "include_path".
 
-		
 		require __DIR__.'/vendor/autoload.php';
 		Predis\Autoloader::register();
 		//use local
@@ -48,17 +35,27 @@
 			'port' => parse_url($_ENV['REDIS_URL'], PHP_URL_PORT),
 			'password' => parse_url($_ENV['REDIS_URL'], PHP_URL_PASS),
 		));
-		
-		
-		
-		
-		
+
+		/*  cache client 引入及設定  */
+		// Using MemcacheSASL client
+		/*
+		include('MemcacheSASL.php');
+		$m = new MemcacheSASL;
+		$servers = explode(",", getenv("MEMCACHIER_SERVERS"));
+		foreach ($servers as $s) {
+		  $parts = explode(":", $s);
+		  $m->addServer($parts[0], $parts[1]);
+		}
+		$m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
+		*/
+		/*  cache client 引入及設定  */
+
 		/*  外部 S3 class 設定 */
 		//include the S3 class				
 		if (!class_exists('S3')) require_once('S3.php');
 		//AWS access info
-		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAISH4GC5XNVHKS6IQ');
-		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
+		if (!defined('awsAccessKey')) define('awsAccessKey', '');
+		if (!defined('awsSecretKey')) define('awsSecretKey', '');
 		//instantiate the class
 		$s3 = new S3(awsAccessKey, awsSecretKey);
 		/* 外部 S3 class 設定 */
@@ -82,9 +79,12 @@
 					// get file content
 		    		$data = file_get_contents($fileTempName);
 					// caching using local file name as key 
-		    		$m->set($fileName,$data,0);
+		    		//$m->set($fileName,$data,0);
+
+					$redis->set($fileName, $data);
+
 		    		// saving file on S3
-					if ($s3->putObjectFile($fileTempName, "nccus3", $fileName, S3::ACL_PUBLIC_READ)) {  
+					if ($s3->putObjectFile($fileTempName, "chunyenchen", $fileName, S3::ACL_PUBLIC_READ)) {
 					    echo "We successfully uploaded your file.";  
 					} else {  
 					    echo "Something went wrong while uploading your file... sorry.";  
@@ -99,8 +99,7 @@
 
 	<!-- 預覽縮圖 div -->
     <div class="image-proview" id="image-proview-layer">
-    	<!--img id="reg_pic" src="upload_photo.PNG"/-->
-    	<img id="reg_pic" src="PleaseUploadPics.jpg"/>
+    	<img id="reg_pic" src="upload_photo.PNG"/>
     </div>
 	<!-- end 預覽縮圖 div -->
 	<!-- 上傳表單，選擇檔案後 onchange 會改變預覽圖案 -->
@@ -113,15 +112,18 @@
     <?php
 		/* 用 foreach 把 S3 所有的圖讀出來顯示，若為資料夾就掉過 */    
 		// Get the contents of our bucket
-		$contents = $s3->getBucket("nccus3");
+		$contents = $s3->getBucket('chunyenchen');
 		foreach ($contents as $file){
 			$fname = $file['name'];
+			$value = $redis->get($fname);
 			$num=strrpos($fname,"/"); // if $file is a directory path
 			if ($num === false) {
-				$furl = "http://nccus3.s3.amazonaws.com/".$fname;
+				$furl = "http://chunyenchen.s3.amazonaws.com/".$fname;
 				echo "<a href=\"image_cache.php?fn=$fname\" alt=\"$fname\"><img id=\"thumb\" src=\"$furl\" /></a>";
 			}
 		}
+
+
 		/* end 讀圖 */	
 	?>
 	<!-- javascript 縮圖程式 -->
