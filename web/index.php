@@ -23,7 +23,7 @@
 	<?php 
 		/*  cache client 引入及設定  */
 		// Using MemcacheSASL client
-		include('MemcacheSASL.php');
+		/*include('MemcacheSASL.php');
 		$m = new MemcacheSASL;
 		$servers = explode(",", getenv("MEMCACHIER_SERVERS"));
 		foreach ($servers as $s) {
@@ -31,14 +31,34 @@
 		  $m->addServer($parts[0], $parts[1]);
 		}
 		$m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
+		*/
 		/*  cache client 引入及設定  */
+		
 
+		
+		require __DIR__.'/vendor/autoload.php';
+		Predis\Autoloader::register();
+		//use local
+		//$redis = new Predis\Client(getenv('REDIS_URL'));
+        
+        //use heroku
+		$redis = new Predis\Client(
+		array(
+			'host' => parse_url($_ENV['REDIS_URL'], PHP_URL_HOST),
+			'port' => parse_url($_ENV['REDIS_URL'], PHP_URL_PORT),
+			'password' => parse_url($_ENV['REDIS_URL'], PHP_URL_PASS),
+		));
+		
+		
+		
+		
+		
 		/*  外部 S3 class 設定 */
 		//include the S3 class				
 		if (!class_exists('S3')) require_once('S3.php');
 		//AWS access info
-		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAIFKYPCAGI5AJIQQQ');
-		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
+		if (!defined('awsAccessKey')) define('awsAccessKey', 'AKIAISH4GC5XNVHKS6IQ');
+		if (!defined('awsSecretKey')) define('awsSecretKey', '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');
 		//instantiate the class
 		$s3 = new S3(awsAccessKey, awsSecretKey);
 		/* 外部 S3 class 設定 */
