@@ -34,12 +34,15 @@
   $m->setSaslAuthData(getenv("MEMCACHIER_USERNAME"), getenv("MEMCACHIER_PASSWORD"));
   */
   //include the S3 class
+  
   if (!class_exists('S3'))require_once('S3.php');
   //AWS access info
+  
   if (!defined('awsAccessKey')) define('awsAccessKey', getenv('S3_KEY'));
   if (!defined('awsSecretKey')) define('awsSecretKey', getenv('S3_SECRET'));
 
   //$in_cache = $m->get("$filename");
+  
   $in_cache = $redis->get("$filename");
   if ($in_cache) {
     echo "<img src=\"data:image/$ext;base64,".base64_encode($in_cache)."\" id=\"thumb\" alt=\"image 1\"/>";

@@ -28,6 +28,7 @@
 		//use local
 		//$redis = new Predis\Client(getenv('REDIS_URL'));
         
+		
         //use heroku
 		$redis = new Predis\Client(
 		array(
