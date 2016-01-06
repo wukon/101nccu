@@ -30,7 +30,7 @@ $filename = $m['Body'];
 $contents = $s3->getBucket('nccus3');
 		foreach ($contents as $file){
 			$fname = $file['name'];
-			$value = $redis->get($fname);
+			//$value = $redis->get($fname);
 			$num=strrpos($fname,"/"); // if $file is a directory path
 			if ($num === false) {
 				$furl = "http://nccus3.s3.amazonaws.com/".$filename;
