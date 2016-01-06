@@ -68,7 +68,9 @@ imagecopyresized($thumb, $src, 0, 0, 0, 0, $thumb_w, $thumb_h, $src_w,    $src_h
 imagejpeg($thumb, 'abc.jpg');
 
 $input =$s3->inputResource(fopen('abc.jpg',"rb"), filesize('abc.jpg');
-if(S3::putObject($input,'smalls3', $filename,S3::ACL_PUBLIC_READ)){
+if(S3::putObject($input,'smalls3', $filename , S3::ACL_PUBLIC_READ))
+
+{
 	echo "file upload success";
 }
 
