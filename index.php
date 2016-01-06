@@ -25,7 +25,7 @@ echo "<p>***Receive Message*** <br>";
 print_r($messages);
 echo "</p>";
 $m = $messages['Messages'][0];
-$filename = $m['Body'] ;
+$filename = $m['Body'];
 
 $contents = $s3->getBucket('nccus3');
 		foreach ($contents as $file){
